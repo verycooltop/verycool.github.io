@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="徐浮生">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="徐浮生">
+    
+    <meta name="keywords" content="hexo,hexo rename">
+    
+    <meta name="description" content>
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Hexo 之 Html 重命名 · 浮生逆旅</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" href="/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js" as="script">
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+</head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >浮生逆旅</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">Hexo 之 Html 重命名</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>浮生逆旅</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            Hexo 之 Html 重命名
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Code">Code</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Fork">Fork</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.9k</span>阅读时长: <span class="post-count reading-time">9 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2019/10/23</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h2 id="为什么去做？"><a href="#为什么去做？" class="headerlink" title="为什么去做？"></a>为什么去做？</h2><p>诚然， <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> 为我们提供了快速易懂搭建个人博客的选择，但由于个人英文水平实在有限，尤其需要通过 <a href="https://www.runoob.com/markdown/md-tutorial.html" target="_blank" rel="noopener">Markdown</a> 的文件标题来描述每篇文章都是什么内容这情况下，使用蹩脚的英文去命名每篇博客，我总是觉得有些难受，而偏偏 Hexo 生成的 Html 文件名称，就是由 Markdown 文件名称来决定的，中文的 URL 显示在地址栏中，未免有些别扭。源于这些原因，我决定使用自己的规则来生成 Html 文件名称。</p>
+<br>
+
+<h3 id="原则"><a href="#原则" class="headerlink" title="原则"></a>原则</h3><p>主要有两个点：</p>
+<ul>
+<li>生成的 Html 静态网页不能每次执行<code>hexo generate</code>时都发生改变 以免影响到已经分享出去的文章</li>
+<li>维持现有的功能，如 Tags、Categories 下的文章 href 链接</li>
+</ul>
+<br>
+
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="按规则生成-Html"><a href="#按规则生成-Html" class="headerlink" title="按规则生成 Html"></a>按规则生成 Html</h3><p>Html 生成的触发操作是<code>hexo generate</code>，首先我们要找到这个操作的入口</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">which</span> hexo</span></span><br><span class="line">/Users/verycooltop/.nvm/versions/node/v10.16.3/bin/hexo</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> cat /Users/verycooltop/.nvm/versions/node/v10.16.3/bin/hexo</span></span><br><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/env node</span></span><br><span class="line"></span><br><span class="line">'use strict';</span><br><span class="line"></span><br><span class="line">require('hexo-cli')();</span><br></pre></td></tr></table></figure>
+
+<p>然后，我们再到 hexo 所在目录下的 node_modules 下的 hexo-cli</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">cd</span> /Users/verycooltop/.nvm/versions/node/v10.16.3/bin/</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> ll</span></span><br><span class="line">total 81632</span><br><span class="line"><span class="meta">#</span><span class="bash"> ...</span></span><br><span class="line">lrwxr-xr-x  1 verycooltop  staff    33B 10 18 16:54 hexo -&gt; ../lib/node_modules/hexo/bin/hexo</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">cd</span> ../lib/node_modules/hexo/node_modules/hexo-cli</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> <span class="built_in">pwd</span></span></span><br><span class="line">/Users/verycooltop/.nvm/versions/node/v10.16.3/lib/node_modules/hexo/node_modules/hexo-cli</span><br></pre></td></tr></table></figure>
+
+<p>找到 <code>hexo-cli</code> main 入口文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt; cat package.json</span><br><span class="line"> &#123;</span><br><span class="line">  &quot;_from&quot;: &quot;hexo-cli@^3.0.0&quot;,</span><br><span class="line">  &quot;_id&quot;: &quot;hexo-cli@3.1.0&quot;,</span><br><span class="line">  ...</span><br><span class="line">  &quot;main&quot;: &quot;lib/hexo&quot;,</span><br><span class="line">	...</span><br><span class="line">  &quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;eslint&quot;: &quot;eslint .&quot;,</span><br><span class="line">    &quot;test&quot;: &quot;mocha test/index.js&quot;,</span><br><span class="line">    &quot;test-cov&quot;: &quot;nyc npm run test&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;version&quot;: &quot;3.1.0&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>hexo-cli/lib/hexo.js</code> 最终使用的 <code>hexo</code> 模块还是我们自己博客项目下的 <code>node_modules/hexo</code> 模块</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> chalk = <span class="built_in">require</span>(<span class="string">'chalk'</span>);</span><br><span class="line"><span class="keyword">const</span> tildify = <span class="built_in">require</span>(<span class="string">'tildify'</span>);</span><br><span class="line"><span class="keyword">const</span> <span class="built_in">Promise</span> = <span class="built_in">require</span>(<span class="string">'bluebird'</span>);</span><br><span class="line"><span class="keyword">const</span> Context = <span class="built_in">require</span>(<span class="string">'./context'</span>);</span><br><span class="line"><span class="keyword">const</span> findPkg = <span class="built_in">require</span>(<span class="string">'./find_pkg'</span>);</span><br><span class="line"><span class="keyword">const</span> goodbye = <span class="built_in">require</span>(<span class="string">'./goodbye'</span>);</span><br><span class="line"><span class="keyword">const</span> minimist = <span class="built_in">require</span>(<span class="string">'minimist'</span>);</span><br><span class="line"><span class="keyword">const</span> resolve = <span class="built_in">require</span>(<span class="string">'resolve'</span>);</span><br><span class="line"><span class="keyword">const</span> camelCaseKeys = <span class="built_in">require</span>(<span class="string">'hexo-util/lib/camel_case_keys'</span>);</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HexoNotFoundError</span> <span class="keyword">extends</span> <span class="title">Error</span> </span>&#123; &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">entry</span>(<span class="params">cwd = process.cwd(</span>), <span class="title">args</span>) </span>&#123;</span><br><span class="line">  </span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line">  </span><br><span class="line"><span class="comment">// 通过 findPkg 及 loadModule require hexo 模块</span></span><br><span class="line">  <span class="keyword">return</span> findPkg(cwd, args).then(<span class="function"><span class="params">path</span> =&gt;</span> &#123;</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">if</span> (!path) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    hexo.base_dir = path;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> loadModule(path, args).catch(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      log.error(<span class="string">'Local hexo not found in %s'</span>, chalk.magenta(tildify(path)));</span><br><span class="line">      log.error(<span class="string">'Try running: \'npm install hexo --save\''</span>);</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> HexoNotFoundError();</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;).then(<span class="function"><span class="params">mod</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (mod) hexo = mod;</span><br><span class="line">    log = hexo.log;</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loadModule</span>(<span class="params">path, args</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Promise</span>.try(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> modulePath = resolve.sync(<span class="string">'hexo'</span>, &#123; <span class="attr">basedir</span>: path &#125;);</span><br><span class="line">    <span class="keyword">const</span> Hexo = <span class="built_in">require</span>(modulePath);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Hexo(path, args);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="built_in">module</span>.exports = entry;</span><br></pre></td></tr></table></figure>
+
+<p>之后回到我们自己的博客项目，找到 <code>hexo</code> 模块的的 main 入口文件</p>
+<br>
+
+<h4 id="修改-blog-node-modules-hexo-lib-hexo-index-js"><a href="#修改-blog-node-modules-hexo-lib-hexo-index-js" class="headerlink" title="修改 blog/node_modules/hexo/lib/hexo/index.js"></a>修改 blog/node_modules/hexo/lib/hexo/index.js</h4><p>每次生成后的 html 文件名称要始终要保持一致，并且不能与其他生成文件名称产生冲突，所以我决定使用 <code>source/_posts</code> 下 md 文件中 <code>date</code> 属性 <code>format(YYYYMMDDHHmmss)</code> 后的字符串作为 html 文件名称。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: Hexo 之 Html 重命名</span><br><span class="line">date: 2019-10-23 20:10:17</span><br><span class="line">tags: </span><br><span class="line">  - Fork</span><br><span class="line">  - Code</span><br><span class="line">categories: Hexo</span><br><span class="line">keywords:</span><br><span class="line">  - hexo</span><br><span class="line">  - hexo rename</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<p>当然，大家可以按照自己的规则去生成 html 的文件名称，前提是需要有一个唯一标识，每次都能够拿到这个唯一标识，并且每次进行同样计算可以得到唯一结果。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="built_in">Promise</span> = <span class="built_in">require</span>(<span class="string">'bluebird'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">Hexo.prototype._routerReflesh = <span class="function"><span class="keyword">function</span>(<span class="params">runningGenerators, useCache</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; route &#125; = <span class="keyword">this</span>;</span><br><span class="line">  <span class="keyword">const</span> routeList = route.list();</span><br><span class="line">  <span class="keyword">const</span> Locals = <span class="keyword">this</span>._generateLocals();</span><br><span class="line">  Locals.prototype.cache = useCache;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> runningGenerators.map(<span class="function"><span class="params">generatorResult</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> generatorResult !== <span class="string">'object'</span> || generatorResult.path == <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">undefined</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// add Route</span></span><br><span class="line">  <span class="comment">// 修改前</span></span><br><span class="line">  <span class="comment">// const path = route.format(generatorResult.path);</span></span><br><span class="line">  <span class="comment">// const &#123; data, layout &#125; = generatorResult;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 修改后</span></span><br><span class="line">  <span class="keyword">let</span> path = route.format(generatorResult.path);</span><br><span class="line">  <span class="keyword">const</span> &#123; data, layout &#125; = generatorResult;</span><br><span class="line">  <span class="comment">// generate YYYYMMDDHHmmss.html  </span></span><br><span class="line">  <span class="keyword">if</span> (layout &amp;&amp; layout[<span class="number">0</span>] === <span class="string">'post'</span>) &#123;</span><br><span class="line">    path = <span class="string">`<span class="subst">$&#123;data.date.format(<span class="string">'YYYYMMDDHHmmss'</span>)&#125;</span>.html`</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">  <span class="keyword">if</span> (!layout) &#123;</span><br><span class="line">    route.set(path, data);</span><br><span class="line">    <span class="keyword">return</span> path;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = Hexo;</span><br></pre></td></tr></table></figure>
+
+<p>这样，我们再次执行 <code>hexo generate</code> 就可以生成按照我们规则定义名称的 html 了</p>
+<p><img src="../images/68DD57FD-1D30-40E6-B332-2D221FF42914.png" alt></p>
+<br>
+
+<h3 id="使页面串联"><a href="#使页面串联" class="headerlink" title="使页面串联"></a>使页面串联</h3><p>通过<code>hexo generate</code>我们可以看到已经生成我们想要的 html 文件名称，但<code>public/index.html</code>、<code>archiives</code>、<code>tags</code>中所有链接的<code>href</code>属性目前还是以往规则生成的页面名称，现在我们需要对渲染模板进行修改。</p>
+<h4 id="首页"><a href="#首页" class="headerlink" title="首页"></a>首页</h4><p><code>themes/archer/layout/index.ejs</code> </p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- //... --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">_content</span> = <span class="string">truncateLength</span> === <span class="string">0</span> ? <span class="attr">null</span> <span class="attr">:</span> <span class="attr">truncate</span>(<span class="attr">strip_html</span>(<span class="attr">_post.content</span>), &#123;<span class="attr">length:</span> <span class="attr">truncateLength</span>, <span class="attr">omission:</span> '<span class="attr">...</span>'&#125;)%&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> &#125; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">article</span> <span class="attr">class</span>=<span class="string">"index-post"</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- =====修改前 --&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- &lt;a class="abstract-title" href = "&lt;%- url_for(_post.path) %&gt;" &gt; --&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- =====修改后 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"abstract-title"</span> <span class="attr">href</span> = <span class="string">"&lt;%- url_for(_post.date.format('YYYYMMDDHHmmss')) %&gt;.html"</span> &gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">%</span> <span class="attr">if</span>(<span class="attr">_post.top</span>) &#123; %&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"stick-top iconfont-archer"</span>&gt;</span>&amp;#xe63d;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">%</span> &#125; %&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- // ... --&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h4 id="Archives"><a href="#Archives" class="headerlink" title="Archives"></a>Archives</h4><p><code>themes/archer/layout/_partial/sidebar/sidebar-archives.ejs</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"sidebar-panel-archives"</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 在ejs中将archive按照时间排序 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">var</span> <span class="attr">resortAllPosts</span> = <span class="string">site.posts.map(function</span> (<span class="attr">item</span>) &#123; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">let</span> <span class="attr">title</span> = <span class="string">item.title;</span> %&gt;</span></span><br><span class="line">  </span><br><span class="line"> 	<span class="comment">&lt;!-- =====修改前 --&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- &lt;% let link = url_for(item.path); %&gt; --&gt;</span></span><br><span class="line"> 	<span class="comment">&lt;!-- =====修改后 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">let</span> <span class="attr">link</span> = <span class="string">date(item.date,</span> "<span class="attr">YYYYMMDDHHmmss</span>") + "<span class="attr">.html</span>"; %&gt;</span></span><br><span class="line">         </span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">let</span> <span class="attr">_date</span> = <span class="string">date(item.date,</span> "<span class="attr">YYYY-MM-DD</span> <span class="attr">HH:MM:SS</span>"); %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">let</span> <span class="attr">returnDate</span> = <span class="string">&#123;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">title</span> <span class="attr">:</span> <span class="attr">title</span>, </span></span><br><span class="line"><span class="tag">      <span class="attr">link</span> <span class="attr">:</span> <span class="attr">link</span>,</span></span><br><span class="line"><span class="tag">      <span class="attr">date</span> <span class="attr">:</span> <span class="attr">_date</span> &#125;; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">return</span> <span class="attr">returnDate</span>; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> &#125;) %&gt;</span></span><br><span class="line">    </span><br><span class="line">  <span class="comment">&lt;!-- // ... --&gt;</span></span><br><span class="line">    </span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">currPagePosts.forEach</span>(<span class="attr">function</span> (<span class="attr">post</span>) &#123; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">if</span> (<span class="attr">showYear</span> != <span class="string">Number(date(post.date,</span> "<span class="attr">YYYY</span>"))) &#123; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">showYear</span> = <span class="string">date(post.date,</span> "<span class="attr">YYYY</span>"); %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">if</span> (<span class="attr">toCloseUl</span> === <span class="string">1)</span> &#123; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">toCloseUl</span> = <span class="string">0;</span> %&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> &#125; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"archive-year"</span>&gt;</span> <span class="tag">&lt;<span class="name">%=</span> <span class="attr">showYear</span> %&gt;</span> <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">ul</span> <span class="attr">class</span>=<span class="string">"year-list"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> <span class="attr">toCloseUl</span> = <span class="string">1;</span> %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> &#125; %&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">"archive-post-item"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"archive-post-date"</span>&gt;</span><span class="tag">&lt;<span class="name">%-</span> <span class="attr">date</span>(<span class="attr">post.date</span>, "<span class="attr">MM</span>/<span class="attr">DD</span>") %&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">class</span>=<span class="string">"archive-post-title"</span> <span class="attr">href</span>= <span class="string">"&lt;%- post.link %&gt;"</span> &gt;</span><span class="tag">&lt;<span class="name">%-</span> <span class="attr">post.title</span> || '[<span class="attr">Untitled</span> <span class="attr">Post</span>]' %&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">%</span> &#125;) %&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h4 id="Tags"><a href="#Tags" class="headerlink" title="Tags"></a>Tags</h4><p><code>themes/archer/src/js/tag.js</code> </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="keyword">let</span> $aItem = $(</span><br><span class="line">  <span class="string">'&lt;a class="meta-post-title" href="'</span> +</span><br><span class="line">  siteMeta.root +</span><br><span class="line">  postInfo.path +</span><br><span class="line">  <span class="string">'"&gt;'</span> +</span><br><span class="line">  <span class="comment">// 修改前</span></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * postInfo.path +</span></span><br><span class="line"><span class="comment">   * '"&gt;' +</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="comment">// 修改后</span></span><br><span class="line">  archerUtil.dateFormater(</span><br><span class="line">    <span class="keyword">new</span> <span class="built_in">Date</span>(<span class="built_in">Date</span>.parse(postInfo.date)),</span><br><span class="line">    <span class="string">'yyyy/MM/dd'</span></span><br><span class="line">  ) +</span><br><span class="line">  <span class="string">'.html"&gt;'</span> +</span><br><span class="line">  postInfo.title +</span><br><span class="line">  <span class="string">'&lt;/a&gt;'</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h4 id="Post"><a href="#Post" class="headerlink" title="Post"></a>Post</h4><p><code>themes/archer/layout/post.ejs</code> </p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- // ... --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">%</span> <span class="attr">if</span>(<span class="attr">theme.copyright.enable</span> === <span class="string">true</span> &amp;&amp; <span class="attr">page.copyright</span> !== <span class="string">false)</span> &#123; %&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"license-wrapper"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span><span class="tag">&lt;<span class="name">%-</span> <span class="attr">__</span>('<span class="attr">author</span>') %&gt;</span>：<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&lt;%- config.url %&gt;"</span>&gt;</span><span class="tag">&lt;<span class="name">%-</span> <span class="attr">config.author</span> %&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- =====修改前 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!--           </span></span><br><span class="line"><span class="comment">  &lt;p&gt;原文链接：&lt;a href="&lt;%- page.permalink %&gt;"&gt;&lt;%- page.permalink %&gt;&lt;/a&gt;</span></span><br><span class="line"><span class="comment">  &lt;p&gt;发表日期：&lt;a href="&lt;%- page.permalink %&gt;"&gt;&lt;%- (page.date).format('MMMM Do YYYY, h:mm:ss a') %&gt;&lt;/a&gt;</span></span><br><span class="line"><span class="comment">  &lt;p&gt;更新日期：&lt;a href="&lt;%- page.permalink %&gt;"&gt;&lt;%- (page.updated).format('MMMM Do YYYY, h:mm:ss a') %&gt;&lt;/a&gt;</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- =====修改后 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>原文链接：<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/&lt;%- page.date.format('YYYYMMDDHHmmss') %&gt;.html"</span>&gt;</span><span class="tag">&lt;<span class="name">%-</span> (<span class="attr">page.date</span>)<span class="attr">.format</span>('<span class="attr">MMMM</span> <span class="attr">Do</span> <span class="attr">YYYY</span>, <span class="attr">h:mm:ss</span> <span class="attr">a</span>') %&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>发表日期：<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/&lt;%- page.date.format('YYYYMMDDHHmmss') %&gt;.html"</span>&gt;</span><span class="tag">&lt;<span class="name">%-</span> (<span class="attr">page.date</span>)<span class="attr">.format</span>('<span class="attr">MMMM</span> <span class="attr">Do</span> <span class="attr">YYYY</span>, <span class="attr">h:mm:ss</span> <span class="attr">a</span>') %&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>更新日期：<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/&lt;%- page.date.format('YYYYMMDDHHmmss') %&gt;.html"</span>&gt;</span><span class="tag">&lt;<span class="name">%-</span> (<span class="attr">page.updated</span>)<span class="attr">.format</span>('<span class="attr">MMMM</span> <span class="attr">Do</span> <span class="attr">YYYY</span>, <span class="attr">h:mm:ss</span> <span class="attr">a</span>') %&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span>版权声明：<span class="tag">&lt;<span class="name">%-</span> <span class="attr">theme.copyright.license</span> %&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">%</span> &#125; %&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- // ... --&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>需要注意下，我使用的 <a href>theme</a> 是 <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank" rel="noopener">Archer</a>，每个 <a href="https://hexo.io/themes/" target="_blank" rel="noopener">theme</a> 使用的引擎模版也可能不尽相同， Archer 使用的是 <a href="https://www.npmjs.com/package/ejs" target="_blank" rel="noopener">EJS</a> 模板引擎，我不能保证其他 theme 所需要修改的代码是上面我所说的。不过大体思路是修改<a href="#首页">首页</a>、<a href="#Archives">Archives</a>、<a href="#Tags">Tags</a>、<a href="#Post">每篇博客</a> 中会出现的文章链接。</p>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>完成上面的修改后，我们就可以运行我们的博客，来体验下整齐 URL 所带来的舒爽感了。</p>
+<p>因为我修改了 Hexo 框架的源代码，也使用了 <a href="https://jenkins.io/zh/" target="_blank" rel="noopener">Jenkins</a> + <a href="http://github.com/" target="_blank" rel="noopener">Github</a> 来做博客的部署工作（你要问我为什么不使用官方推荐的部署方式，那是因为想熟悉下 Jekins，哈哈），所以我 Fork 了 Hexo，我依赖的是<a href="https://github.com/verycooltop/hexo/tree/3.9.0" target="_blank" rel="noopener">修改之后的 Hexo</a>。</p>
+<p>接下来的话，我可能考虑再弄一下 Sitemap，Google 的和 Baidu 的，同样，我应该也要 Fork 她们。</p>
+<blockquote>
+<p>拜～</p>
+</blockquote>
+<br>
+
+<p><img src="../images/BCC43F8CC5BC112223C5880893C287C2.gif" alt></p>
+
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="http://blog.verycool.top">徐浮生</a>
+            <p>原文链接：<a href="/20191023201017.html">http://blog.verycool.top/20191023201017.html</a>
+            <p>发表日期：<a href="/20191023201017.html">October 23rd 2019, 8:10:17 pm</a>
+            <p>更新日期：<a href="/20191023201017.html">March 25th 2023, 1:32:34 pm</a>
+            <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href= "/20191101171454.html" title= "VLOG - 我和小马哥的友谊">
+                    <div class="nextTitle">VLOG - 我和小马哥的友谊</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/20191022100851.html" title= "初识 TypeScript">
+                    <div class="prevTitle">初识 TypeScript</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <div id="comment"></div>
+    <script>
+    new Valine({
+        el: '#comment' ,
+        notify:false, 
+        verify:false, 
+        appId: "wK3iJYcVvD5KCq4NTgT4p2Ur-MdYXbMMI",
+        appKey: "aQxvEwyC2snkWF9roGYKUDcu",
+        placeholder: "",
+        path:window.location.pathname, 
+        avatar:'mm' 
+    });
+    </script>
+
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:kwin.xu@outlook.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/verycooltop" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/assets/example_qr.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    <a href="http://beian.miit.gov.cn" style="color: #cccccc; font-size:x-small" >京ICP备19044598号-1</a>
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么去做？"><span class="toc-number">1.</span> <span class="toc-text">为什么去做？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#原则"><span class="toc-number">1.1.</span> <span class="toc-text">原则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-number">2.</span> <span class="toc-text">实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#按规则生成-Html"><span class="toc-number">2.1.</span> <span class="toc-text">按规则生成 Html</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#修改-blog-node-modules-hexo-lib-hexo-index-js"><span class="toc-number">2.1.1.</span> <span class="toc-text">修改 blog/node_modules/hexo/lib/hexo/index.js</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使页面串联"><span class="toc-number">2.2.</span> <span class="toc-text">使页面串联</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#首页"><span class="toc-number">2.2.1.</span> <span class="toc-text">首页</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Archives"><span class="toc-number">2.2.2.</span> <span class="toc-text">Archives</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Tags"><span class="toc-number">2.2.3.</span> <span class="toc-text">Tags</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Post"><span class="toc-number">2.2.4.</span> <span class="toc-text">Post</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最后"><span class="toc-number">3.</span> <span class="toc-text">最后</span></a></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 9
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2020 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/28</span><a class="archive-post-title" href= "20201128131220.html" >MongoDB 特性及使用</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/26</span><a class="archive-post-title" href= "20201126165003.html" >Web Server 的原理及 Express 运作方式解析</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/15</span><a class="archive-post-title" href= "20191115220657.html" >JS中的逻辑运算符</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/07</span><a class="archive-post-title" href= "20191107133830.html" >变量声明之const、let的正确用法</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span><a class="archive-post-title" href= "20191106180430.html" >Mongodb之$where踩坑</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span><a class="archive-post-title" href= "20191106105920.html" >什么是 Git？</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/01</span><a class="archive-post-title" href= "20191101171454.html" >VLOG - 我和小马哥的友谊</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/23</span><a class="archive-post-title" href= "20191023201017.html" >Hexo 之 Html 重命名</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/22</span><a class="archive-post-title" href= "20191022100851.html" >初识 TypeScript</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="Code"><span class="iconfont-archer">&#xe606;</span>Code</span>
+    
+        <span class="sidebar-tag-name" data-tags="Base"><span class="iconfont-archer">&#xe606;</span>Base</span>
+    
+        <span class="sidebar-tag-name" data-tags="Description"><span class="iconfont-archer">&#xe606;</span>Description</span>
+    
+        <span class="sidebar-tag-name" data-tags="Event"><span class="iconfont-archer">&#xe606;</span>Event</span>
+    
+        <span class="sidebar-tag-name" data-tags="Fork"><span class="iconfont-archer">&#xe606;</span>Fork</span>
+    
+        <span class="sidebar-tag-name" data-tags="Vlog"><span class="iconfont-archer">&#xe606;</span>Vlog</span>
+    
+        <span class="sidebar-tag-name" data-tags="DB"><span class="iconfont-archer">&#xe606;</span>DB</span>
+    
+        <span class="sidebar-tag-name" data-tags="版本控制"><span class="iconfont-archer">&#xe606;</span>版本控制</span>
+    
+        <span class="sidebar-tag-name" data-tags="ES6"><span class="iconfont-archer">&#xe606;</span>ES6</span>
+    
+        <span class="sidebar-tag-name" data-tags="Express"><span class="iconfont-archer">&#xe606;</span>Express</span>
+    
+        <span class="sidebar-tag-name" data-tags="HTTP"><span class="iconfont-archer">&#xe606;</span>HTTP</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="JavaScript"><span class="iconfont-archer">&#xe60a;</span>JavaScript</span>
+    
+        <span class="sidebar-category-name" data-categories="计算机"><span class="iconfont-archer">&#xe60a;</span>计算机</span>
+    
+        <span class="sidebar-category-name" data-categories="TypeScript"><span class="iconfont-archer">&#xe60a;</span>TypeScript</span>
+    
+        <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
+    
+        <span class="sidebar-category-name" data-categories="Me"><span class="iconfont-archer">&#xe60a;</span>Me</span>
+    
+        <span class="sidebar-category-name" data-categories="Mongodb"><span class="iconfont-archer">&#xe60a;</span>Mongodb</span>
+    
+        <span class="sidebar-category-name" data-categories="Git"><span class="iconfont-archer">&#xe60a;</span>Git</span>
+    
+        <span class="sidebar-category-name" data-categories="NodeJS"><span class="iconfont-archer">&#xe60a;</span>NodeJS</span>
+    
+        <span class="sidebar-category-name" data-categories="MongoDB"><span class="iconfont-archer">&#xe60a;</span>MongoDB</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "徐浮生"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+

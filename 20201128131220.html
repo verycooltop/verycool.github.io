@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="徐浮生">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="徐浮生">
+    
+    <meta name="keywords" content="mongo,mongodb,schema,aggregate">
+    
+    <meta name="description" content>
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>MongoDB 特性及使用 · 浮生逆旅</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="stylesheet" href="/css/mobile.css?v=20180824" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js" as="script">
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+</head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >浮生逆旅</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">MongoDB 特性及使用</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>浮生逆旅</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            MongoDB 特性及使用
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "DB">DB</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">4.7k</span>阅读时长: <span class="post-count reading-time">16 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2020/11/28</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>首先说明一点这个博客的内容大多是我在公司个人技术分享，更多的作用是做一个总结，也许会出现上下文不通顺，叙述不明的情况，请见谅。</p>
+<p>这篇博客是我在翻阅了《MongoDB实战 第二版》之后诞生的，书本身的内容不错，但是就翻译这一点不得不吐槽，随便找一处，能够将 “cursor” 翻译成光标，可想而知译者对这本书有多么”负责任”，在这里我不得不说一声垃圾。</p>
+<h2 id="诞生"><a href="#诞生" class="headerlink" title="诞生"></a>诞生</h2><p>在 2007 年，美国纽约有一个名为 10gen（后改名为 MongoDB,Inc） 的创业团队，建立了自己的 PaaS 平台，该平台与 Google App Engine 类似，设计目标就是自动处理伸缩和管理硬件与软件的基础架构，解放开发者，使他们可以更专注于应用开发。</p>
+<p>然而 10gen 最终发现开发者并不喜欢放弃对于技术栈的控制，万幸的是用户喜欢上了 10gen 的数据库技术。这就导致了 10gen 团队专注于开发这个数据库产品，最终形成了 MongoDB 项目。</p>
+<p>MongoDB 为开源项目，代码完全公开下载，并且可以免费修改、使用，只要遵守代码开源协议即可。鼓励社区提交 Bug 和补丁，MongoDB 的路线图专注于满足社区用户的需求以及创建兼具关系型数据库和分布式键值存储最佳特性的数据库。</p>
+<h2 id="关键特性"><a href="#关键特性" class="headerlink" title="关键特性"></a>关键特性</h2><h3 id="文档数据模型"><a href="#文档数据模型" class="headerlink" title="文档数据模型"></a>文档数据模型</h3><p><strong><center>类比传统SQL数据库</center></strong></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>MySQL（SQL）</th>
+<th>MongoDB（NoSQL）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>数据载体</td>
+<td>Table</td>
+<td>Collection</td>
+</tr>
+<tr>
+<td>单个实例</td>
+<td>Row</td>
+<td>Document</td>
+</tr>
+<tr>
+<td>实例属性</td>
+<td>Column</td>
+<td>Key</td>
+</tr>
+</tbody></table>
+<p><strong><center>社交新闻网站数据模型（关系型数据库）</center></strong></p>
+<p><img src="../images/b710a56b-4c85-4f52-9a0b-2b4d717433ab.png" alt></p>
+<p><strong><center>社交新闻网站数据模型（MongoDB）</center></strong></p>
+<p><img src="../images/1212ba61-1add-443a-9a5f-eadffb9ecb4e.png" alt></p>
+<p>MongoDB 以二进制 JSON 的格式存储文档数据，或者叫做 BSON。文档不需要遵守严格的数据定义Schema。<strong>理论上每个集合中的文档都可以拥有不同的数据结构；实际上结合中的文档是相对一致的。</strong>我把这句话理解为：利用数据不需要遵从严格的 Schema这一特性，为相同类型数据创建一个集和。</p>
+<h3 id="Ad-Hoc-Queries"><a href="#Ad-Hoc-Queries" class="headerlink" title="Ad Hoc Queries"></a>Ad Hoc Queries</h3><p>主动查询模式：不需要事先定义系统接收何种查询。</p>
+<p>关系型数据库会忠实的执行格式正确的包含各种条件的 SQL 查询。但不是所有数据库都支持动态查询，例如健值存储的查询只支持一个领域的查询：主键。键值存储数据库牺牲丰富的查询功能来换取更简单的伸缩模型。MongoDB 的设计目标之一是保留大部分关系型数据库的功能。</p>
+<h3 id="辅助索引"><a href="#辅助索引" class="headerlink" title="辅助索引"></a>辅助索引</h3><p>大部分数据库会给每条数据一个主键，一个唯一的数据标识，每个主键都会自动索引，这样就可以使用唯一的键来高效的访问每条数据，我们称之为<strong>主键索引（primary key indexes）</strong>。</p>
+<p>许多 NoSQL 数据库，比如 HBase，被当作 keyvalue 数据库，这是因为他们那不允许创建辅助索引。因为 MongoDB 引入了 Ad Hoc Queries 模式，拥有丰富的查询功能，所以 MongoDB 必然能够为主键之外的数据属性创建索引，这些索引我们叫做<strong>辅助索引（secondary indexes）</strong>。在 MongoDB 中，我们可以为每个集合创建 64 个索引。 </p>
+<h3 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h3><p>MongoDB 提供了数据库复制特性，叫做可复制集合（replica set）。可复制集合在多个及其上分布式存储数据，在服务器或者网络出错时，实现数据冗余存储和自动灾备。此外，复制还用于伸缩数据库读操作。</p>
+<p><img src="../images/9e925438-fabd-4211-a692-11f5a152a990.png" alt></p>
+<h3 id="加速与持久化"><a href="#加速与持久化" class="headerlink" title="加速与持久化"></a>加速与持久化</h3><p>在数据库系统领域，写入速度和持久性之间存在矛盾的关系。</p>
+<p>写入速度可以理解为数据库在给定的时间内插入、更新和删除的容量。持久性指的是这些写操作被永久保存的保证级别。</p>
+<p>在 MongoDB 中设置日志的关闭开启及写入时间间隔、使用主从复制来让写入速度与持久性平衡。</p>
+<h3 id="伸缩"><a href="#伸缩" class="headerlink" title="伸缩"></a>伸缩</h3><p>伸缩数据库的最简单方式是添加更快的硬盘、更多的内存以及更强的 CPU 来突破数据库性能瓶颈。提升单节点参数的做法通常也称垂直扩展。垂直扩展非常简单、可靠，但是最终我们会达到一个无法低成本垂直扩展的临界点。</p>
+<p>MongoDB 的设计目标之一是水平伸缩。通过基于范围的<strong>分片机制</strong>来实现水平扩展，可以自动化管理每个分布式节点存储的数据。另外还有基于哈希和基于 tag 的分片机制，这也是另外一种基于范围的分片机制。</p>
+<p><img src="../images/8ea99316-e1d7-4dd1-9efb-c3c29d77769d.png" alt></p>
+<p>分片系统处理额外的分片节点，而且它还会自动化灾备。每个独立的节点是一个可复制集合，至少由 2 台机器组成，确保节点失败的时候可以自动恢复。这就意味着不需要应用节点去处理这些逻辑；我们的应用与 MongoDB 集群通讯就好像与单个节点通讯一样。</p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="Schema-设计原则"><a href="#Schema-设计原则" class="headerlink" title="Schema 设计原则"></a>Schema 设计原则</h3><h4 id="关系型数据库设计范式"><a href="#关系型数据库设计范式" class="headerlink" title="关系型数据库设计范式"></a>关系型数据库设计范式</h4><p>对于关系型数据库来讲，我们只需要尽可能遵守数据库设计范式即可，设计范式可以帮助我们确保通用查询以及数据一致性。</p>
+<p>目前关系数据库有六种范式：第一范式（1NF）、第二范式（2NF）、第三范式（3NF）、巴斯-科德范式（BCNF）、第四范式(4NF）和第五范式（5NF，又称完美范式）。</p>
+<p>规范化目的是使结构更合理，消除存储异常，使数据冗余尽量小。便于插入、删除和更新。</p>
+<p>实际应用过程中大部分仅使用前三大范式：属性不可拆分或无重复的列、完全依赖、消除传递依赖。有时故意保留部分冗余可能更方便数据查询。尤其对于那些更新频度不高，查询频度极高的数据库系统更是如此。</p>
+<p>简单理解范式的方式是：信息不会存储两次以上。</p>
+<h4 id="MongoDB-Schema-设计方案"><a href="#MongoDB-Schema-设计方案" class="headerlink" title="MongoDB Schema 设计方案"></a>MongoDB Schema 设计方案</h4><p>在 MongoDB 中，我们并没有像关系型数据库中比较强制的规范性的设计范式，因为 MongoDB 的数据模型是基于文档的，具有丰富的、多层次的数据表现。相较于关系型数据库，MongoDB 灵活的数据结构更偏向于开发者，SQL 对于数据科学家和分析师来说更为适合。</p>
+<p>MongoDB 这种灵活的文档特性，在存储一对多、多对多的关系上更加得心应手，仅仅需要创建一个为数组类型的 key，但缺少类似于关系型数据库 join 查询的能力，我们在数据建模时主要结合应用业务场景考虑两点：</p>
+<blockquote>
+<ol>
+<li>做数据查询操作时以最少查询次数得到想要的结果</li>
+<li>做数据更新操作时影响最少文档数</li>
+</ol>
+</blockquote>
+<p>简单来说就是尽可能多的冗余那些不轻易更新的其他集合中的数据属性，当然这些冗余数据也应当在常用查询中得以使用。也许这样看起来特别反范式，但对于缺少关联查询手段的 MongoDB 来说，这是最优方案。</p>
+<p>有时候我们也需要去创建一些属于本集合内属性的看起来比较多余的缓存属性，例如用户声音模块中的投票，voter_ids 以及 helpful_votes 两个 Schema 属性，其中 voter_ids 存储了所有投票用户的 ID，这样可以阻止用户多次投票，而且这有助于查询所有投票的用户，helpful_votes 存储的是所有投票人数，因为 MongoDB 不允许我们查询文档里数组的大小，基于此进行排序，这是非常有帮助的。</p>
+<h3 id="文档的限制"><a href="#文档的限制" class="headerlink" title="文档的限制"></a>文档的限制</h3><ul>
+<li>在 MongoDB 2.0 及以后的版本，文档的大小被限制为 16 MB</li>
+<li>文档的嵌套深度最大值限制为 100</li>
+</ul>
+<h3 id="固定集合（capped-collection）"><a href="#固定集合（capped-collection）" class="headerlink" title="固定集合（capped collection）"></a>固定集合（capped collection）</h3><p>固定集合最初是为高性能日志场景设计的，和标准集合不同，拥有固定的大小存储空间，一旦集合中存储的文档达到上限，后续的插入将会覆盖最先插入的文档。</p>
+<p>除了可以进行存储空间大小限制外，也允许指定集合的最大文档数量，可以实现更细粒度的控制。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.createCollection(<span class="string">"user.actions"</span>, &#123; <span class="attr">capped</span>: <span class="literal">true</span>, <span class="attr">size</span>: <span class="number">16384</span>, <span class="attr">max</span>: <span class="number">100</span> &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>固定集合不允许进行对文档的更新和删除操作。</p>
+<h3 id="聚合（aggregate）"><a href="#聚合（aggregate）" class="headerlink" title="﻿聚合（aggregate）"></a>﻿聚合（aggregate）</h3><p>聚合管道 （aggregation pipeline）里的每一步输出都作为下一步都输入</p>
+<p><img src="../images/39e4a517-10f7-4a1b-ae6a-3b8052937561.png" alt></p>
+<ul>
+<li>$project    指定输出文档里的字段</li>
+<li>$match     选择要处理的文档</li>
+<li>$limit         限制传递给下一步的文档数量</li>
+<li>$skip         跳过一定数量的文档</li>
+<li>$unwind    打平数组，为每个数组元素生成一个输出文档</li>
+<li>$group      根据 _id 来分组文档</li>
+<li>$sort         排序文档</li>
+<li>$geoNear 选择某个地理位置附近的文档</li>
+<li>$out          把聚合结果写入某个集合</li>
+<li>$redact    控制特定数据的访问</li>
+</ul>
+<h3 id="Map-Reduce"><a href="#Map-Reduce" class="headerlink" title="Map-Reduce"></a>Map-Reduce</h3><p>Map-reduces 是 MongoDB 提供灵活聚合功能的首次尝试。使用 Map-Reduce，就可以使用 JavaScript 定义整个处理流程。这提供了很大的灵活性，但是比 Aggregate Framework 性能要低得多：</p>
+<ol>
+<li>Map-Reduce 引擎需要将每条文档从 BSON 转换为 JSON。2.4 以前版本存在单个全局 JavaScript 锁，该锁仅允许一次单个 JavaScript 线程运行。</li>
+<li>JavaScript 引擎需要被解释运行，而 Aggregate Framework 运行已经编译的 C++ 代码</li>
+</ol>
+<h3 id="性能调优及使用注意"><a href="#性能调优及使用注意" class="headerlink" title="性能调优及使用注意"></a>性能调优及使用注意</h3><h4 id="注入攻击"><a href="#注入攻击" class="headerlink" title="注入攻击"></a>注入攻击</h4><p>除了意识到随之而来的性能损失，还必须注意 JavaScript 注入攻击的可能性。每当允许用户直接输入代码到 JavaScript 查询，就可能产生注入攻击。例如，当用户直接在排序查询中提交了一个用户表单和值时。如果用户设置属性值或者数值，则这种查询是不安全的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@users.find(&#123;&quot;$where&quot;: =&gt; &quot;this.#&#123;attribute&#125; == $&#123;value&#125;&quot;&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这种情况下，属性值和数值被插入成字符串，然后认定为 JavaScript。这种方式是危险的，因为用户发送的值中可能会包句 JavaScript 代码，让他们获取其他数据集合。这将导致严重的安全漏洞，恶意用户可能会看到其他用户的数据。一般情况下，我们总是要假设用户可能会发送恶意数据和相应计划。</p>
+<h4 id="ne"><a href="#ne" class="headerlink" title="$ne"></a>$ne</h4><p>$ne 并不等同于运算符，作用并不如我们所预期。在操作中，最佳使用方式是结合一个其他的运算符，否则会因为不能使用索引而造成查询效率低下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.products.find(&#123;&quot;details.manufacturer&quot;: &quot;Acme&quot;, tags: &#123;$ne: &quot;gardening&quot;&#125;&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="where"><a href="#where" class="headerlink" title="$where"></a>$where</h4><p>和 $ne  一样，也是不能够去使用索引的。因为 $where 的值是一段 JavaScript 代码，以为着 mongodb 需要去解析执行它。除非万不得已的情况下，我们轻易不要使用 $where，如果非要使用，最好在其前加一个过滤条件，进一步减少命中的文档数量。</p>
+<h4 id="size"><a href="#size" class="headerlink" title="$size"></a>$size</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.users.find(&#123;&quot;addresses&quot;: &#123; $size: 3 &#125;&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>$size 运算符不能够使用索引和限制精准匹配（不能指定 size 的范围）。如果我们需要基于数组的大小执行查询，我们可以在文档自身缓存一个属性（数组大小），并且在操作数组的同事手动更新这一属性。可以在缓存属性上面建立数组，可以指定范围并精准匹配查询。</p>
+<h4 id="rename-unset"><a href="#rename-unset" class="headerlink" title="$rename $unset"></a>$rename $unset</h4><p>多用于刷库脚本，进行修改文档属性 key</p>
+<h4 id="sort-复合排序"><a href="#sort-复合排序" class="headerlink" title="sort 复合排序"></a>sort 复合排序</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.reviews.find(&#123;&#125;).sort(&#123;<span class="string">"helpful_votes"</span>: <span class="number">-1</span>, <span class="string">"rating"</span>: <span class="number">-1</span>&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>类似于这样的查询，结果并不一定是我们想象中先根据 “helpful_votes” 再根据 “rating” 进行排序。因为 Ruby 哈希是无序的，所以我们需要使用数组注明字段的排序顺序：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.reviews.find(&#123;&#125;).sort([[<span class="string">"helpful_votes"</span>: <span class="number">-1</span>], [<span class="string">"rating"</span>: <span class="number">-1</span>]]);</span><br></pre></td></tr></table></figure>
+
+<h4 id="skip"><a href="#skip" class="headerlink" title="skip"></a>skip</h4><p>skip 和 limit 是我们在分页查询中使用非常频繁的查询选项，数据库也一如既往的返回给我们想要的结果。但我们应该小心在有大量命中文档时使用大数值 skip，这种查询服务要求扫描的文档等于 skip 值。</p>
+<p>以往经验是我们需要根据业务在集合文档中去缓存一些帮助分页查询的 index，我们可以在应用服务中进行计算，得出最开始的 index 甚至本页最后一个 index，这样甚至能够不使用 skip 和 limit 来达到目的。</p>
+<h4 id="事物"><a href="#事物" class="headerlink" title="事物"></a>事物</h4><p>可以利用 findAndModify 在过程中锁定文档的特性，在 find 条件中详尽的写出应该命中文档的字段值，比如要通过或拒绝一个审批，那么该审批的状态必定为 pending 状态，我们的查询选择条件应该为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; _id: ObjectId(&quot;5fc1ed2b03453c26a681db6c&quot;), status: APPROVAL_STATUS.PENDING &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这么做可以避免段时间内的并发请求去修改已经修改过的文档，尽可能达到与预期一致。</p>
+<h4 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h4><p>在 MongoDB 2.2 之前，锁策略非常简单，单个读/写锁驻留在整个 MongoDB 实例中。这意味着在任何时刻 MongoDB 只允许一个写或者多个读操作。在 MongoDB 2.2 版本中改为了数据库级别的锁，意味着在数据库级别而不是整个实例级别使用锁，在单个数据库中可以有一个写或者多个读操作。在 MongoDB 3.0 版本中，WiredTiger 存储引擎工作在集合级别，提供了更加强大的文档级别的锁。</p>
+<h4 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h4><p>在 MMAPv1 存储引擎中，修改文档的大小和数据结构时可能会重写整个文档，如果文档扩大，现存储数据的磁盘空间位置不能继续满足，还需要移动到新的空间中。以 MMAPv1 作为存储引擎的 MongoDB 会通过动态调整集合分配预留空间的<strong>填充因子（padding factor）</strong>来优化这个问题。填充因子会乘以每个插入文档的大小来获取额外空间，MongoDB 3.0 使用了 2 的幂来作为 MMAPv1 存储引擎默认记录空间分配大小。</p>
+<h4 id="索引效率"><a href="#索引效率" class="headerlink" title="索引效率"></a>索引效率</h4><p>对于密集读取的应用，索引的成本是可以理解的，要确保所有的索引都会被使用，不会有冗余。假设某个集合包含 10 个索引，当我们做数据插入、删除文档、因空间不足挪动文档或更新文档的索引键，都可能需要对这 10 个索引数据进行维护修改。</p>
+<p>我们要确保索引都被加入到 RAM 里，这也是为什么不创建冗余索引的原因，设置的索引越多，就需要越多的 RAM 来维护这些索引。</p>
+<h4 id="PROFILER-分析器"><a href="#PROFILER-分析器" class="headerlink" title="PROFILER 分析器"></a>PROFILER 分析器</h4><p>对于慢速查询的分析，我们可以使用内置的分析器。默认情况下 MongoDB 禁用了这个工具</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use database_name;</span><br><span class="line">db.setProfilingLevel(<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<p>分析结果会保存到一个特殊集合：system.profile。该集合是一个固定集合</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.system.profile.find(&#123;&#125;).sort(&#123;<span class="attr">millis</span>: <span class="number">-1</span>&#125;).limit(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="string">"op"</span> : <span class="string">"command"</span>,</span><br><span class="line">	<span class="string">"ns"</span> : <span class="string">"lesschat.agile_work_items"</span>,</span><br><span class="line">	<span class="string">"command"</span> : &#123;</span><br><span class="line">		<span class="string">"aggregate"</span> : <span class="string">"agile_work_items"</span>,</span><br><span class="line">		<span class="string">"pipeline"</span> : [],</span><br><span class="line">		<span class="string">"allowDiskUse"</span> : <span class="literal">true</span>,</span><br><span class="line">		<span class="string">"cursor"</span> : &#123;</span><br><span class="line">			<span class="string">"batchSize"</span> : <span class="number">100</span></span><br><span class="line">		&#125;,</span><br><span class="line">		<span class="string">"maxTimeMS"</span> : <span class="number">58000</span>,</span><br><span class="line">		<span class="string">"lsid"</span> : &#123;</span><br><span class="line">			<span class="string">"id"</span> : UUID(<span class="string">"4f0b65fa-dc75-42ea-a5c0-f0cc6f54050c"</span>)</span><br><span class="line">		&#125;,</span><br><span class="line">		<span class="string">"$db"</span> : <span class="string">"lesschat"</span>,</span><br><span class="line">		<span class="string">"$readPreference"</span> : &#123;</span><br><span class="line">			<span class="string">"mode"</span> : <span class="string">"secondaryPreferred"</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">"cursorid"</span> : <span class="number">5628156822228229486</span>,</span><br><span class="line">	<span class="string">"keysExamined"</span> : <span class="number">31315</span>,</span><br><span class="line">	<span class="string">"docsExamined"</span> : <span class="number">31218</span>,</span><br><span class="line">	<span class="string">"hasSortStage"</span> : <span class="literal">true</span>,</span><br><span class="line">	<span class="string">"numYield"</span> : <span class="number">245</span>,</span><br><span class="line">	<span class="string">"nreturned"</span> : <span class="number">100</span>,</span><br><span class="line">	<span class="string">"locks"</span> : &#123;</span><br><span class="line">		<span class="string">"Global"</span> : &#123;</span><br><span class="line">			<span class="string">"acquireCount"</span> : &#123;</span><br><span class="line">				<span class="string">"r"</span> : <span class="number">250</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		<span class="string">"Database"</span> : &#123;</span><br><span class="line">			<span class="string">"acquireCount"</span> : &#123;</span><br><span class="line">				<span class="string">"r"</span> : <span class="number">248</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		<span class="string">"Collection"</span> : &#123;</span><br><span class="line">			<span class="string">"acquireCount"</span> : &#123;</span><br><span class="line">				<span class="string">"r"</span> : <span class="number">248</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">"storage"</span> : &#123;</span><br><span class="line">		</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="string">"responseLength"</span> : <span class="number">5604</span>,</span><br><span class="line">	<span class="string">"protocol"</span> : <span class="string">"op_msg"</span>,</span><br><span class="line">	<span class="string">"millis"</span> : <span class="number">172</span>,</span><br><span class="line">	<span class="string">"planSummary"</span> : <span class="string">"IXSCAN &#123; team: 1, project_id: 1, type: 1, is_archived: 1 &#125;"</span>,</span><br><span class="line">	<span class="string">"ts"</span> : ISODate(<span class="string">"2020-07-27T20:40:04.988+08:00"</span>),</span><br><span class="line">	<span class="string">"client"</span> : <span class="string">"10.0.0.45"</span>,</span><br><span class="line">	<span class="string">"allUsers"</span> : [</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="string">"user"</span> : <span class="string">"worktile"</span>,</span><br><span class="line">			<span class="string">"db"</span> : <span class="string">"lesschat"</span></span><br><span class="line">		&#125;</span><br><span class="line">	],</span><br><span class="line">	<span class="string">"user"</span> : <span class="string">"worktile@lesschat"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>查询分析器非常有用，但要获取最大收益，需要我们有条不紊的操作。最好的做法是开发阶段就找出一些慢速的查询，如果在生产阶段发现问题，解决问题的成本更高。</p>
+<h4 id="explain"><a href="#explain" class="headerlink" title="explain"></a>explain</h4><p>通过 PROFILER 分析器，我们可以拿到慢速查询，之后通过 explain 诊断工具来找出查询慢的原因，突破瓶颈。</p>
+<h4 id="查询优化器"><a href="#查询优化器" class="headerlink" title="查询优化器"></a>查询优化器</h4><p>查询优化器会选择扫描索引入口数量最少的索引作为查询计划。</p>
+<ol>
+<li>根据查询模式（Query pattern）Query Sharp 判断是否存在 CachePlan，如果存在直接选择该 CachePlan 作为最优查询计划</li>
+<li>每个索引的查询计划都有可能满足查询需求，查询优化器会根据这些索引创建新的查询计划并标记计划类型，如果类型为 Optimal Plan 则直接将该 Plan 的 Query Sharp 及查询计划写入CachePlan，否则标记为 Helpful Plan 类型并继续创建查询计划</li>
+<li>并发执行全部 Helpful Plan，选择 nReturned 最少的查询计划，将该 Plan 的 Query Sharp 及查询计划写入CachePlan</li>
+</ol>
+<h4 id="查询模式"><a href="#查询模式" class="headerlink" title="查询模式"></a>查询模式</h4><p>仅在值上不同的查询选择条件</p>
+<h4 id="Query-Shape"><a href="#Query-Shape" class="headerlink" title="Query Shape"></a>Query Shape</h4><p>由查询、排序和投影规范的组合组成</p>
+<h4 id="Optimal-Plan"><a href="#Optimal-Plan" class="headerlink" title="Optimal Plan"></a>Optimal Plan</h4><p>Optimal Plan的索引首先应该包含所有查询的过滤字段和排序字段，其次，字段在索引中的顺序是范围过滤和排序字段位于相等字段之后。有多个Optimal Plan时，会执行第一个。</p>
+<h4 id="Helpful-Plan"><a href="#Helpful-Plan" class="headerlink" title="Helpful Plan"></a>Helpful Plan</h4><p>不存在Optimal Plan时，查询优化器会并发执行所有Helpful Plan。最早得到101个结果的查询计划会被选中继续执行，并将该查询计划暂存。其他查询计划会被中止。</p>
+<h4 id="CachePlan"><a href="#CachePlan" class="headerlink" title="CachePlan"></a>CachePlan</h4><p>缓存的查询计划在以下条件下会清空</p>
+<ul>
+<li>集合收到1000次写操作</li>
+<li>执行reindex</li>
+<li>添加或删除索引</li>
+<li>mongod进程重启</li>
+<li>查询时指定explain()</li>
+</ul>
+<h4 id="hint"><a href="#hint" class="headerlink" title="hint"></a>hint</h4><p>查询优化器并不能保证每次查询都是最优的，无论是 OptimalPlan 还是 WinningPlan 都是相对的，配合 hint 指定索引，会使查询优化器更加准确</p>
+<blockquote>
+<p>拜～</p>
+</blockquote>
+<br>
+
+<p><img src="../images/BCC43F8CC5BC112223C5880893C287C2.gif" alt></p>
+
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="http://blog.verycool.top">徐浮生</a>
+            <p>原文链接：<a href="/20201128131220.html">http://blog.verycool.top/20201128131220.html</a>
+            <p>发表日期：<a href="/20201128131220.html">November 28th 2020, 1:12:20 pm</a>
+            <p>更新日期：<a href="/20201128131220.html">March 25th 2023, 1:32:34 pm</a>
+            <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/20201126165003.html" title= "Web Server 的原理及 Express 运作方式解析">
+                    <div class="prevTitle">Web Server 的原理及 Express 运作方式解析</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <div id="comment"></div>
+    <script>
+    new Valine({
+        el: '#comment' ,
+        notify:false, 
+        verify:false, 
+        appId: "wK3iJYcVvD5KCq4NTgT4p2Ur-MdYXbMMI",
+        appKey: "aQxvEwyC2snkWF9roGYKUDcu",
+        placeholder: "",
+        path:window.location.pathname, 
+        avatar:'mm' 
+    });
+    </script>
+
+
+    <!-- 评论 -->
+</main>
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:kwin.xu@outlook.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/verycooltop" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+            
+                <span class="iconfont-archer wechat" title=wechat>
+                  
+                  <img class="profile-qr" src="/assets/example_qr.jpg" />
+                </span>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    <a href="http://beian.miit.gov.cn" style="color: #cccccc; font-size:x-small" >京ICP备19044598号-1</a>
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引言"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#诞生"><span class="toc-number">2.</span> <span class="toc-text">诞生</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关键特性"><span class="toc-number">3.</span> <span class="toc-text">关键特性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#文档数据模型"><span class="toc-number">3.1.</span> <span class="toc-text">文档数据模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ad-Hoc-Queries"><span class="toc-number">3.2.</span> <span class="toc-text">Ad Hoc Queries</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#辅助索引"><span class="toc-number">3.3.</span> <span class="toc-text">辅助索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#复制"><span class="toc-number">3.4.</span> <span class="toc-text">复制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#加速与持久化"><span class="toc-number">3.5.</span> <span class="toc-text">加速与持久化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#伸缩"><span class="toc-number">3.6.</span> <span class="toc-text">伸缩</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用"><span class="toc-number">4.</span> <span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Schema-设计原则"><span class="toc-number">4.1.</span> <span class="toc-text">Schema 设计原则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#关系型数据库设计范式"><span class="toc-number">4.1.1.</span> <span class="toc-text">关系型数据库设计范式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MongoDB-Schema-设计方案"><span class="toc-number">4.1.2.</span> <span class="toc-text">MongoDB Schema 设计方案</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文档的限制"><span class="toc-number">4.2.</span> <span class="toc-text">文档的限制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#固定集合（capped-collection）"><span class="toc-number">4.3.</span> <span class="toc-text">固定集合（capped collection）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#聚合（aggregate）"><span class="toc-number">4.4.</span> <span class="toc-text">﻿聚合（aggregate）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Map-Reduce"><span class="toc-number">4.5.</span> <span class="toc-text">Map-Reduce</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#性能调优及使用注意"><span class="toc-number">4.6.</span> <span class="toc-text">性能调优及使用注意</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#注入攻击"><span class="toc-number">4.6.1.</span> <span class="toc-text">注入攻击</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ne"><span class="toc-number">4.6.2.</span> <span class="toc-text">$ne</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#where"><span class="toc-number">4.6.3.</span> <span class="toc-text">$where</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#size"><span class="toc-number">4.6.4.</span> <span class="toc-text">$size</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rename-unset"><span class="toc-number">4.6.5.</span> <span class="toc-text">$rename $unset</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sort-复合排序"><span class="toc-number">4.6.6.</span> <span class="toc-text">sort 复合排序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#skip"><span class="toc-number">4.6.7.</span> <span class="toc-text">skip</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#事物"><span class="toc-number">4.6.8.</span> <span class="toc-text">事物</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#锁"><span class="toc-number">4.6.9.</span> <span class="toc-text">锁</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#更新"><span class="toc-number">4.6.10.</span> <span class="toc-text">更新</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#索引效率"><span class="toc-number">4.6.11.</span> <span class="toc-text">索引效率</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PROFILER-分析器"><span class="toc-number">4.6.12.</span> <span class="toc-text">PROFILER 分析器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#explain"><span class="toc-number">4.6.13.</span> <span class="toc-text">explain</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查询优化器"><span class="toc-number">4.6.14.</span> <span class="toc-text">查询优化器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查询模式"><span class="toc-number">4.6.15.</span> <span class="toc-text">查询模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Query-Shape"><span class="toc-number">4.6.16.</span> <span class="toc-text">Query Shape</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Optimal-Plan"><span class="toc-number">4.6.17.</span> <span class="toc-text">Optimal Plan</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Helpful-Plan"><span class="toc-number">4.6.18.</span> <span class="toc-text">Helpful Plan</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CachePlan"><span class="toc-number">4.6.19.</span> <span class="toc-text">CachePlan</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#hint"><span class="toc-number">4.6.20.</span> <span class="toc-text">hint</span></a></li></ol></li></ol></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 9
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2020 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/28</span><a class="archive-post-title" href= "20201128131220.html" >MongoDB 特性及使用</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/26</span><a class="archive-post-title" href= "20201126165003.html" >Web Server 的原理及 Express 运作方式解析</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/15</span><a class="archive-post-title" href= "20191115220657.html" >JS中的逻辑运算符</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/07</span><a class="archive-post-title" href= "20191107133830.html" >变量声明之const、let的正确用法</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span><a class="archive-post-title" href= "20191106180430.html" >Mongodb之$where踩坑</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/06</span><a class="archive-post-title" href= "20191106105920.html" >什么是 Git？</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/01</span><a class="archive-post-title" href= "20191101171454.html" >VLOG - 我和小马哥的友谊</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/23</span><a class="archive-post-title" href= "20191023201017.html" >Hexo 之 Html 重命名</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/22</span><a class="archive-post-title" href= "20191022100851.html" >初识 TypeScript</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="Code"><span class="iconfont-archer">&#xe606;</span>Code</span>
+    
+        <span class="sidebar-tag-name" data-tags="Base"><span class="iconfont-archer">&#xe606;</span>Base</span>
+    
+        <span class="sidebar-tag-name" data-tags="Description"><span class="iconfont-archer">&#xe606;</span>Description</span>
+    
+        <span class="sidebar-tag-name" data-tags="Event"><span class="iconfont-archer">&#xe606;</span>Event</span>
+    
+        <span class="sidebar-tag-name" data-tags="Fork"><span class="iconfont-archer">&#xe606;</span>Fork</span>
+    
+        <span class="sidebar-tag-name" data-tags="Vlog"><span class="iconfont-archer">&#xe606;</span>Vlog</span>
+    
+        <span class="sidebar-tag-name" data-tags="DB"><span class="iconfont-archer">&#xe606;</span>DB</span>
+    
+        <span class="sidebar-tag-name" data-tags="版本控制"><span class="iconfont-archer">&#xe606;</span>版本控制</span>
+    
+        <span class="sidebar-tag-name" data-tags="ES6"><span class="iconfont-archer">&#xe606;</span>ES6</span>
+    
+        <span class="sidebar-tag-name" data-tags="Express"><span class="iconfont-archer">&#xe606;</span>Express</span>
+    
+        <span class="sidebar-tag-name" data-tags="HTTP"><span class="iconfont-archer">&#xe606;</span>HTTP</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="JavaScript"><span class="iconfont-archer">&#xe60a;</span>JavaScript</span>
+    
+        <span class="sidebar-category-name" data-categories="计算机"><span class="iconfont-archer">&#xe60a;</span>计算机</span>
+    
+        <span class="sidebar-category-name" data-categories="TypeScript"><span class="iconfont-archer">&#xe60a;</span>TypeScript</span>
+    
+        <span class="sidebar-category-name" data-categories="Hexo"><span class="iconfont-archer">&#xe60a;</span>Hexo</span>
+    
+        <span class="sidebar-category-name" data-categories="Me"><span class="iconfont-archer">&#xe60a;</span>Me</span>
+    
+        <span class="sidebar-category-name" data-categories="Mongodb"><span class="iconfont-archer">&#xe60a;</span>Mongodb</span>
+    
+        <span class="sidebar-category-name" data-categories="Git"><span class="iconfont-archer">&#xe60a;</span>Git</span>
+    
+        <span class="sidebar-category-name" data-categories="NodeJS"><span class="iconfont-archer">&#xe60a;</span>NodeJS</span>
+    
+        <span class="sidebar-category-name" data-categories="MongoDB"><span class="iconfont-archer">&#xe60a;</span>MongoDB</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "徐浮生"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
